@@ -1,7 +1,9 @@
-import { ExternalLink, Github } from "lucide-react";
+import { ExternalLink, Github, Maximize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
+import ProjectModal from "./ProjectModal";
 import project1 from "@assets/generated_images/project_dashboard_preview.png";
 import project2 from "@assets/generated_images/e-commerce_app_preview.png";
 import project3 from "@assets/generated_images/social_platform_preview.png";
@@ -16,6 +18,14 @@ const projects = [
     image: project1,
     tags: ["React", "TypeScript", "Node.js", "PostgreSQL"],
     featured: true,
+    features: [
+      "Real-time data visualization with charts",
+      "Custom report builder",
+      "Team collaboration tools",
+      "Advanced filtering and search",
+      "Export to PDF and Excel",
+      "Role-based access control",
+    ],
   },
   {
     id: 2,
@@ -25,6 +35,14 @@ const projects = [
     image: project2,
     tags: ["Next.js", "Stripe", "Tailwind CSS"],
     featured: false,
+    features: [
+      "Stripe payment integration",
+      "Inventory management system",
+      "Product recommendations",
+      "Customer analytics dashboard",
+      "Multi-currency support",
+      "Order tracking system",
+    ],
   },
   {
     id: 3,
@@ -34,6 +52,14 @@ const projects = [
     image: project3,
     tags: ["React", "Firebase", "WebSocket"],
     featured: true,
+    features: [
+      "Real-time messaging with WebSocket",
+      "Post creation and sharing",
+      "Story feature with 24h expiry",
+      "User profiles and followers",
+      "Like and comment system",
+      "Notification system",
+    ],
   },
   {
     id: 4,
@@ -43,13 +69,29 @@ const projects = [
     image: project4,
     tags: ["Python", "OpenAI", "React", "FastAPI"],
     featured: false,
+    features: [
+      "GPT-4 powered conversations",
+      "Context-aware responses",
+      "Multi-language support",
+      "Chat history and search",
+      "Custom training on documents",
+      "API integration capabilities",
+    ],
   },
 ];
 
 export default function ProjectsSection() {
+  const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
   return (
-    <section id="projects" className="py-20 px-6">
-      <div className="max-w-7xl mx-auto">
+    <>
+      {selectedProject && (
+        <ProjectModal
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+        />
+      )}
+      <section id="projects" className="py-20 px-6">
+        <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16 space-y-4">
           <Badge className="mb-2" data-testid="badge-section-projects">
             Portfolio
@@ -131,10 +173,11 @@ export default function ProjectsSection() {
                     <Button
                       variant="default"
                       size="sm"
-                      data-testid={`button-view-project-${project.id}`}
+                      onClick={() => setSelectedProject(project)}
+                      data-testid={`button-focus-project-${project.id}`}
                     >
-                      <ExternalLink className="mr-2 h-4 w-4" />
-                      View Project
+                      <Maximize2 className="mr-2 h-4 w-4" />
+                      Focus Mode
                     </Button>
                     <Button
                       variant="outline"
@@ -152,5 +195,6 @@ export default function ProjectsSection() {
         </div>
       </div>
     </section>
+    </>
   );
 }

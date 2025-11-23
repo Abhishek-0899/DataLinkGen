@@ -13,18 +13,32 @@ export default function HeroSection() {
     "UI/UX Enthusiast",
   ];
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [displayedText, setDisplayedText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setIsAnimating(true);
-      setTimeout(() => {
-        setCurrentRoleIndex((prev) => (prev + 1) % roles.length);
-        setIsAnimating(false);
-      }, 300);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
+    const currentRole = roles[currentRoleIndex];
+    let timeout: NodeJS.Timeout;
+
+    if (!isDeleting && displayedText !== currentRole) {
+      timeout = setTimeout(() => {
+        setDisplayedText(currentRole.slice(0, displayedText.length + 1));
+      }, 100);
+    } else if (!isDeleting && displayedText === currentRole) {
+      timeout = setTimeout(() => {
+        setIsDeleting(true);
+      }, 2000);
+    } else if (isDeleting && displayedText !== "") {
+      timeout = setTimeout(() => {
+        setDisplayedText(currentRole.slice(0, displayedText.length - 1));
+      }, 50);
+    } else if (isDeleting && displayedText === "") {
+      setIsDeleting(false);
+      setCurrentRoleIndex((prev) => (prev + 1) % roles.length);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [displayedText, isDeleting, currentRoleIndex, roles]);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -65,12 +79,11 @@ export default function HeroSection() {
               </h1>
               <div className="h-12 flex items-center">
                 <p
-                  className={`text-2xl md:text-3xl text-blue-200 font-medium transition-all duration-300 ${
-                    isAnimating ? "opacity-0 translate-y-2" : "opacity-100"
-                  }`}
+                  className="text-2xl md:text-3xl text-blue-200 font-medium font-mono"
                   data-testid="text-role"
                 >
-                  {roles[currentRoleIndex]}
+                  {displayedText}
+                  <span className="animate-pulse">|</span>
                 </p>
               </div>
               <p
