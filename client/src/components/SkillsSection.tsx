@@ -1,60 +1,123 @@
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 import {
-  Code2,
-  Database,
-  Wrench,
-  Palette,
-  Server,
-  Cloud,
-} from "lucide-react";
+  SiReact,
+  SiTypescript,
+  SiTailwindcss,
+  SiNextdotjs,
+  SiNodedotjs,
+  SiExpress,
+  SiPython,
+  SiPostgresql,
+  SiMongodb,
+  SiFirebase,
+  SiGit,
+  SiDocker,
+  SiJavascript,
+  SiHtml5,
+  SiCss3,
+  SiRedis,
+  SiGraphql,
+  SiKubernetes,
+  SiJest,
+} from "react-icons/si";
+import { useEffect, useRef } from "react";
 
-const skillCategories = [
-  {
-    title: "Frontend Development",
-    icon: Code2,
-    skills: [
-      { name: "React", level: 95 },
-      { name: "TypeScript", level: 90 },
-      { name: "Tailwind CSS", level: 92 },
-      { name: "Next.js", level: 88 },
-    ],
-  },
-  {
-    title: "Backend Development",
-    icon: Server,
-    skills: [
-      { name: "Node.js", level: 90 },
-      { name: "Express", level: 88 },
-      { name: "Python", level: 85 },
-      { name: "REST APIs", level: 93 },
-    ],
-  },
-  {
-    title: "Database & Cloud",
-    icon: Database,
-    skills: [
-      { name: "PostgreSQL", level: 87 },
-      { name: "MongoDB", level: 82 },
-      { name: "AWS", level: 80 },
-      { name: "Firebase", level: 85 },
-    ],
-  },
-  {
-    title: "Tools & Others",
-    icon: Wrench,
-    skills: [
-      { name: "Git", level: 92 },
-      { name: "Docker", level: 78 },
-      { name: "CI/CD", level: 80 },
-      { name: "Agile", level: 88 },
-    ],
-  },
+const skills = [
+  { name: "React", icon: SiReact, color: "#61DAFB" },
+  { name: "TypeScript", icon: SiTypescript, color: "#3178C6" },
+  { name: "JavaScript", icon: SiJavascript, color: "#F7DF1E" },
+  { name: "Node.js", icon: SiNodedotjs, color: "#339933" },
+  { name: "Next.js", icon: SiNextdotjs, color: "#000000" },
+  { name: "Tailwind CSS", icon: SiTailwindcss, color: "#06B6D4" },
+  { name: "Python", icon: SiPython, color: "#3776AB" },
+  { name: "PostgreSQL", icon: SiPostgresql, color: "#4169E1" },
+  { name: "MongoDB", icon: SiMongodb, color: "#47A248" },
+  { name: "Firebase", icon: SiFirebase, color: "#FFCA28" },
+  { name: "Docker", icon: SiDocker, color: "#2496ED" },
+  { name: "Git", icon: SiGit, color: "#F05032" },
+  { name: "Express", icon: SiExpress, color: "#000000" },
+  { name: "GraphQL", icon: SiGraphql, color: "#E10098" },
+  { name: "Redis", icon: SiRedis, color: "#DC382D" },
+  { name: "HTML5", icon: SiHtml5, color: "#E34F26" },
+  { name: "CSS3", icon: SiCss3, color: "#1572B6" },
+  { name: "Kubernetes", icon: SiKubernetes, color: "#326CE5" },
+  { name: "Jest", icon: SiJest, color: "#C21325" },
 ];
 
-export default function SkillsSection() {
+const SkillCard = ({ skill, index }: { skill: typeof skills[0]; index: number }) => {
+  const IconComponent = skill.icon;
+  
   return (
-    <section id="skills" className="py-20 px-6 bg-muted/30">
+    <div
+      className="group flex-shrink-0 w-32 h-32 mx-4"
+      style={{
+        animation: `float 6s ease-in-out infinite`,
+        animationDelay: `${index * 0.2}s`,
+      }}
+      data-testid={`skill-card-${index}`}
+    >
+      <div className="relative h-full w-full">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl blur-xl group-hover:blur-2xl transition-all duration-300 opacity-50 group-hover:opacity-100" />
+        <div className="relative h-full w-full bg-card border border-card-border rounded-xl p-6 flex flex-col items-center justify-center gap-3 hover-elevate transition-all duration-300 backdrop-blur-sm">
+          <div
+            className="transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6"
+            style={{
+              filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.15))',
+            }}
+          >
+            <IconComponent
+              className="w-12 h-12"
+              style={{ color: skill.color }}
+              data-testid={`icon-skill-${index}`}
+            />
+          </div>
+          <span
+            className="text-xs font-medium text-center"
+            data-testid={`text-skill-name-${index}`}
+          >
+            {skill.name}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default function SkillsSection() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
+
+    let animationId: number;
+    let scrollPosition = 0;
+    const scrollSpeed = 0.5;
+
+    const scroll = () => {
+      scrollPosition += scrollSpeed;
+      
+      if (scrollPosition >= scrollContainer.scrollWidth / 2) {
+        scrollPosition = 0;
+      }
+      
+      scrollContainer.scrollLeft = scrollPosition;
+      animationId = requestAnimationFrame(scroll);
+    };
+
+    animationId = requestAnimationFrame(scroll);
+
+    return () => {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+    };
+  }, []);
+
+  const doubledSkills = [...skills, ...skills];
+
+  return (
+    <section id="skills" className="py-20 px-6 bg-muted/30 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16 space-y-4">
           <Badge className="mb-2" data-testid="badge-section-skills">
@@ -75,66 +138,36 @@ export default function SkillsSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {skillCategories.map((category, categoryIndex) => {
-            const IconComponent = category.icon;
-            return (
-              <Card
-                key={category.title}
-                className="p-6 hover-elevate transition-all duration-300"
-                data-testid={`card-skill-category-${categoryIndex}`}
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 rounded-md bg-primary/10">
-                    <IconComponent
-                      className="h-6 w-6 text-primary"
-                      data-testid={`icon-category-${categoryIndex}`}
-                    />
-                  </div>
-                  <h3
-                    className="font-display font-semibold text-lg"
-                    data-testid={`text-category-title-${categoryIndex}`}
-                  >
-                    {category.title}
-                  </h3>
-                </div>
-
-                <div className="space-y-4">
-                  {category.skills.map((skill, skillIndex) => (
-                    <div
-                      key={skill.name}
-                      className="space-y-2"
-                      data-testid={`skill-${categoryIndex}-${skillIndex}`}
-                    >
-                      <div className="flex justify-between items-center">
-                        <span
-                          className="text-sm font-medium"
-                          data-testid={`text-skill-name-${categoryIndex}-${skillIndex}`}
-                        >
-                          {skill.name}
-                        </span>
-                        <span
-                          className="text-xs text-muted-foreground"
-                          data-testid={`text-skill-level-${categoryIndex}-${skillIndex}`}
-                        >
-                          {skill.level}%
-                        </span>
-                      </div>
-                      <div className="h-2 bg-muted rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-primary rounded-full transition-all duration-1000"
-                          style={{ width: `${skill.level}%` }}
-                          data-testid={`progress-skill-${categoryIndex}-${skillIndex}`}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            );
-          })}
+        <div className="relative">
+          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-muted/30 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-muted/30 to-transparent z-10 pointer-events-none" />
+          
+          <div
+            ref={scrollRef}
+            className="flex overflow-x-hidden py-8"
+            style={{
+              scrollBehavior: 'auto',
+              WebkitOverflowScrolling: 'touch',
+            }}
+            data-testid="skills-slider"
+          >
+            {doubledSkills.map((skill, index) => (
+              <SkillCard key={`${skill.name}-${index}`} skill={skill} index={index} />
+            ))}
+          </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px) rotateX(0deg);
+          }
+          50% {
+            transform: translateY(-10px) rotateX(5deg);
+          }
+        }
+      `}</style>
     </section>
   );
 }
